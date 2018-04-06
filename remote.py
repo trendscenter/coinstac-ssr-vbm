@@ -40,7 +40,8 @@ def remote_1(args):
 
     """
     input_list = args["input"]
-    y_labels = input_list["local0"][
+    userID = list(input_list)[0]
+    y_labels = input_list[userID][
         "y_labels"]  # don't like this line here because everyone has to sent the labels, but they should have been available at the remote itself by virtue of having specified in the compspec.json
 
     all_local_stats_dicts = [
@@ -150,27 +151,6 @@ def remote_2(args):
         ps = reg.t_to_p(ts, dof_global[i])
         ts_global.append(ts)
         ps_global.append(ps)
-
-#    # Block of code to print just global stats
-#    keys = [
-#        "ROI", "avg_beta_vector", "r2_global", "ts_global", "ps_global",
-#        "dof_global"
-#    ]
-#    dict_list = []
-#    for index, label in enumerate(y_labels):
-#        values = [
-#            label, avg_beta_vector[index], r_squared_global[index],
-#            ts_global[index].tolist(), ps_global[index], dof_global[index]
-#        ]
-#        my_dict = {key: value for key, value in zip(keys, values)}
-#        dict_list.append(my_dict)
-#
-#    computation_output = {
-#        "output": {
-#            "regressions": dict_list
-#        },
-#        "success": True
-#    }
 
     # Block of code to print local stats as well
     sites = ['Site_' + str(i) for i in range(len(all_local_stats_dicts))]
