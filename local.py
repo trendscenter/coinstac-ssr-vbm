@@ -51,7 +51,9 @@ def local_1(args):
     """
     input_list = args["input"]
     (X, y) = vbm_parser(args)
-    y = y.loc[:, 0:9]  # comment this line to demonstrate docker hanging
+
+    y = pd.DataFrame(
+        y.loc[:, 0:4])  # comment this line to demonstrate docker hanging
     y_labels = ['{}_{}'.format('voxel', str(i)) for i in range(y.shape[1])]
 
     lamb = input_list["lambda"]
