@@ -49,14 +49,13 @@ def local_1(args):
         Step 2 : Compute mean_y_local and length of target values
 
     """
-    input_list = args["input"]
+    input_data = args["input"]
     (X, y) = vbm_parser(args)
 
-    y = pd.DataFrame(
-        y.loc[:, 0:4])  # comment this line to demonstrate docker hanging
+    y = y.loc[:, 0:1000]  # comment this line to run on all voxels
     y_labels = ['{}_{}'.format('voxel', str(i)) for i in range(y.shape[1])]
 
-    lamb = input_list["lambda"]
+    lamb = input_data["lambda"]
     biased_X = sm.add_constant(X)
     biased_X = biased_X.values
 
@@ -144,15 +143,15 @@ def local_2(args):
         SST_local and varX_matrix_local
 
     """
-    cache_list = args["cache"]
-    input_list = args["input"]
+    cache_data = args["cache"]
+    input_data = args["input"]
 
-    X = cache_list["covariates"]
-    y = cache_list["dependents"]
+    X = cache_data["covariates"]
+    y = cache_data["dependents"]
     biased_X = sm.add_constant(X)
 
-    avg_beta_vector = input_list["avg_beta_vector"]
-    mean_y_global = input_list["mean_y_global"]
+    avg_beta_vector = input_data["avg_beta_vector"]
+    mean_y_global = input_data["mean_y_global"]
 
     y = pd.DataFrame(y)
 
@@ -181,7 +180,7 @@ def local_2(args):
 
 if __name__ == '__main__':
 
-    parsed_args = json.loads(sys.argv[1])
+    parsed_args = json.loads(sys.stdin.read())
     phase_key = list(reg.listRecursive(parsed_args, 'computation_phase'))
 
     if not phase_key:

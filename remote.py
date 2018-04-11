@@ -39,25 +39,25 @@ def remote_1(args):
                                     }
 
     """
-    input_list = args["input"]
-    userID = list(input_list)[0]
-    y_labels = input_list[userID][
+    input_data = args["input"]
+    userID = list(input_data)[0]
+    y_labels = input_data[userID][
         "y_labels"]  # don't like this line here because everyone has to sent the labels, but they should have been available at the remote itself by virtue of having specified in the compspec.json
 
     all_local_stats_dicts = [
-        input_list[site]["local_stats_dict"] for site in input_list
+        input_data[site]["local_stats_dict"] for site in input_data
     ]
 
     avg_beta_vector = np.average(
         [
-            np.array(input_list[site]["beta_vector_local"])
-            for site in input_list
+            np.array(input_data[site]["beta_vector_local"])
+            for site in input_data
         ],
         axis=0)
 
-    mean_y_local = [input_list[site]["mean_y_local"] for site in input_list]
+    mean_y_local = [input_data[site]["mean_y_local"] for site in input_data]
     count_y_local = [
-        np.array(input_list[site]["count_local"]) for site in input_list
+        np.array(input_data[site]["count_local"]) for site in input_data
     ]
     mean_y_global = np.array(mean_y_local) * np.array(count_y_local)
     mean_y_global = np.average(mean_y_global, axis=0)
@@ -122,20 +122,20 @@ def remote_2(args):
                   the variable had no effect.)
 
     """
-    input_list = args["input"]
+    input_data = args["input"]
     y_labels = args["cache"]["y_labels"]
     all_local_stats_dicts = args["cache"]["local_stats_dict"]
 
-    cache_list = args["cache"]
-    avg_beta_vector = cache_list["avg_beta_vector"]
-    dof_global = cache_list["dof_global"]
+    cache_data = args["cache"]
+    avg_beta_vector = cache_data["avg_beta_vector"]
+    dof_global = cache_data["dof_global"]
 
     SSE_global = sum(
-        [np.array(input_list[site]["SSE_local"]) for site in input_list])
+        [np.array(input_data[site]["SSE_local"]) for site in input_data])
     SST_global = sum(
-        [np.array(input_list[site]["SST_local"]) for site in input_list])
+        [np.array(input_data[site]["SST_local"]) for site in input_data])
     varX_matrix_global = sum([
-        np.array(input_list[site]["varX_matrix_local"]) for site in input_list
+        np.array(input_data[site]["varX_matrix_local"]) for site in input_data
     ])
 
     r_squared_global = 1 - (SSE_global / SST_global)
@@ -199,8 +199,9 @@ def remote_2(args):
 
 if __name__ == '__main__':
 
-    parsed_args = json.loads(sys.argv[1])
+    parsed_args = json.loads(sys.stdin.read())
     phase_key = list(reg.listRecursive(parsed_args, 'computation_phase'))
+
     if "local_1" in phase_key:
         computation_output = remote_1(parsed_args)
         sys.stdout.write(computation_output)
