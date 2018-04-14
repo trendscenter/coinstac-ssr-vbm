@@ -3,7 +3,6 @@
 """
 This script includes the local computations for single-shot ridge
 regression with decentralized statistic calculation
-
 """
 import json
 import numpy as np
@@ -12,6 +11,7 @@ import sys
 import regression as reg
 import warnings
 from parsers import vbm_parser
+from local_ancillary import mean_and_len_y, local_stats_to_dict
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
@@ -49,64 +49,35 @@ def local_1(args):
         Step 2 : Compute mean_y_local and length of target values
 
     """
-    input_data = args["input"]
+    input_list = args["input"]
     (X, y) = vbm_parser(args)
 
-    y = y.loc[:, 0:1000]  # comment this line to run on all voxels
-    y_labels = ['{}_{}'.format('voxel', str(i)) for i in range(y.shape[1])]
+    y_labels = list(y.columns)
 
-    lamb = input_data["lambda"]
-    biased_X = sm.add_constant(X)
-    biased_X = biased_X.values
+    lamb = input_list["lambda"]
 
-    beta_vector, meanY_vector, lenY_vector = [], [], []
+    meanY_vector, lenY_vector = mean_and_len_y(y)
 
-    local_params = []
-    local_sse = []
-    local_pvalues = []
-    local_tvalues = []
-    local_rsquared = []
+    beta_vector, local_stats_list = local_stats_to_dict(X, y)
 
-    for column in y.columns:
-        curr_y = list(y[column])
-        beta = reg.one_shot_regression(biased_X, curr_y, lamb)
-        beta_vector.append(beta.tolist())
-        meanY_vector.append(np.mean(curr_y))
-        lenY_vector.append(len(y))
+    output_dict = {
+        "beta_vector_local": beta_vector,
+        "mean_y_local": meanY_vector,
+        "count_local": lenY_vector,
+        "y_labels": y_labels,
+        "local_stats_dict": local_stats_list,
+        "computation_phase": 'local_1',
+    }
 
-        # Printing local stats as well
-        model = sm.OLS(curr_y, biased_X.astype(float)).fit()
-        local_params.append(model.params)
-        local_sse.append(model.ssr)
-        local_pvalues.append(model.pvalues)
-        local_tvalues.append(model.tvalues)
-        local_rsquared.append(model.rsquared_adj)
-
-    keys = ["beta", "sse", "pval", "tval", "rsquared"]
-    dict_list = []
-    for index, _ in enumerate(y_labels):
-        values = [
-            local_params[index].tolist(), local_sse[index],
-            local_pvalues[index].tolist(), local_tvalues[index].tolist(),
-            local_rsquared[index]
-        ]
-        local_stats_dict = {key: value for key, value in zip(keys, values)}
-        dict_list.append(local_stats_dict)
+    cache_dict = {
+        "covariates": X.to_json(orient='records'),
+        "dependents": y.to_json(orient='records'),
+        "lambda": lamb
+    }
 
     computation_output = {
-        "output": {
-            "beta_vector_local": beta_vector,
-            "mean_y_local": meanY_vector,
-            "count_local": lenY_vector,
-            "computation_phase": 'local_1',
-            "y_labels": y_labels,
-            "local_stats_dict": dict_list
-        },
-        "cache": {
-            "covariates": X.values.tolist(),
-            "dependents": y.values.tolist(),
-            "lambda": lamb
-        }
+        "output": output_dict,
+        "cache": cache_dict,
     }
 
     return json.dumps(computation_output)
@@ -143,17 +114,15 @@ def local_2(args):
         SST_local and varX_matrix_local
 
     """
-    cache_data = args["cache"]
-    input_data = args["input"]
+    cache_list = args["cache"]
+    input_list = args["input"]
 
-    X = cache_data["covariates"]
-    y = cache_data["dependents"]
-    biased_X = sm.add_constant(X)
+    X = pd.read_json(cache_list["covariates"], orient='records')
+    y = pd.read_json(cache_list["dependents"], orient='records')
+    biased_X = sm.add_constant(X.values)
 
-    avg_beta_vector = input_data["avg_beta_vector"]
-    mean_y_global = input_data["mean_y_global"]
-
-    y = pd.DataFrame(y)
+    avg_beta_vector = input_list["avg_beta_vector"]
+    mean_y_global = input_list["mean_y_global"]
 
     SSE_local, SST_local = [], []
     for index, column in enumerate(y.columns):
@@ -165,15 +134,16 @@ def local_2(args):
 
     varX_matrix_local = np.dot(biased_X.T, biased_X)
 
-    computation_output = {
-        "output": {
-            "SSE_local": SSE_local,
-            "SST_local": SST_local,
-            "varX_matrix_local": varX_matrix_local.tolist(),
-            "computation_phase": 'local_2'
-        },
-        "cache": {}
+    output_dict = {
+        "SSE_local": SSE_local,
+        "SST_local": SST_local,
+        "varX_matrix_local": varX_matrix_local.tolist(),
+        "computation_phase": 'local_2'
     }
+
+    cache_dict = {}
+
+    computation_output = {"output": output_dict, "cache": cache_dict}
 
     return json.dumps(computation_output)
 
