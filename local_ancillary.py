@@ -77,10 +77,10 @@ def local_stats_to_dict(X, y):
             params[:, index].tolist(), sse[index], pvalues[:, index].tolist(),
             tvalues[:, index].tolist(), rsquared[index]
         ]
-        local_stats_dict = {key: value for key, value in zip(keys, values)}
+        local_stats_dict = dict(zip(keys, values))
         local_stats_list.append(local_stats_dict)
 
-        beta_vector = [l.tolist() for l in params.T]
+        beta_vector = params.T.tolist()
 
     return beta_vector, local_stats_list
 
