@@ -161,10 +161,9 @@ def remote_2(args):
 
     all_local_stats_dicts = list(map(list, zip(*all_local_stats_dicts)))
 
-    a_dict = [{
-        key: value
-        for key, value in zip(sites, all_local_stats_dicts[i])
-    } for i in range(len(all_local_stats_dicts))]
+    a_dict = [{key: value
+               for key, value in zip(sites, stats_dict)}
+              for stats_dict in all_local_stats_dicts]
 
     # Block of code to print just global stats
     keys1 = [
@@ -176,8 +175,9 @@ def remote_2(args):
             avg_beta_vector[index], r_squared_global[index],
             ts_global[index].tolist(), ps_global[index], dof_global[index]
         ]
-        my_dict = {key: value for key, value in zip(keys1, values)}
+        my_dict = dict(zip(keys1, values))
         global_dict_list.append(my_dict)
+
 
 #    values = pd.DataFrame(
 #        list(
@@ -186,7 +186,7 @@ def remote_2(args):
 #        columns=keys1)
 #    global_dict_list = values.to_dict(orient='records')
 
-    # Print Everything
+# Print Everything
     keys2 = ["ROI", "global_stats", "local_stats"]
     values3 = pd.DataFrame(
         list(zip(y_labels, global_dict_list, a_dict)), columns=keys2)
