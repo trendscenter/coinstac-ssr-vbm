@@ -18,13 +18,8 @@ with warnings.catch_warnings():
 
 
 def mean_and_len_y(y):
-    meanY_vector = []
-    lenY_vector = []
-
-    for column in y.columns:
-        curr_y = list(y[column])
-        meanY_vector.append(np.mean(curr_y))
-        lenY_vector.append(len(y))
+    meanY_vector = y.mean(axis=0).tolist()
+    lenY_vector = y.count(axis=0).tolist()
 
     return meanY_vector, lenY_vector
 

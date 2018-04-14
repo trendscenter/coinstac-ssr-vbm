@@ -97,7 +97,6 @@ def vbm_parser(args):
 
     y_list = nifti_to_data(args, X_files, y_files)
     y = pd.DataFrame.from_records(y_list)
-#    y = y.loc[:, 0:25]
 
     y.columns = ['{}_{}'.format('voxel', str(i)) for i in y.columns]
     return (X, y)
