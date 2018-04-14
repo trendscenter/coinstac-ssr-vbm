@@ -5,6 +5,7 @@ This script includes the remote computations for single-shot ridge
 regression with decentralized statistic calculation
 """
 import json
+import pandas as pd
 import sys
 import scipy as sp
 import numpy as np
@@ -178,20 +179,24 @@ def remote_2(args):
         my_dict = {key: value for key, value in zip(keys1, values)}
         global_dict_list.append(my_dict)
 
+#    values = pd.DataFrame(
+#        list(
+#            zip(avg_beta_vector, r_squared_global, ts_global, ps_global,
+#                dof_global)),
+#        columns=keys1)
+#    global_dict_list = values.to_dict(orient='records')
+
     # Print Everything
-    dict_list = []
     keys2 = ["ROI", "global_stats", "local_stats"]
-    for index, label in enumerate(y_labels):
-        values = [label, global_dict_list[index], a_dict[index]]
-        my_dict = {key: value for key, value in zip(keys2, values)}
-        dict_list.append(my_dict)
+    values3 = pd.DataFrame(
+        list(zip(y_labels, global_dict_list, a_dict)), columns=keys2)
+    dict_list = values3.to_dict(orient='records')
 
     output_dict = {"regressions": dict_list}
 
     computation_output = {"output": output_dict, "success": True}
 
     return json.dumps(computation_output)
-
 
 if __name__ == '__main__':
 
