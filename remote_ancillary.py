@@ -10,8 +10,7 @@ import pandas as pd
 
 
 def get_stats_to_dict(a, *b):
-    values = pd.DataFrame(
-        list(zip(*b)), columns=a)
-    dict_list = values.to_dict(orient='records')
+    df = pd.DataFrame(list(zip(*b)), columns=a)
+    dict_list = df.to_dict(orient='records')
 
     return dict_list

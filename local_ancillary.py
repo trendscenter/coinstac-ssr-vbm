@@ -6,6 +6,7 @@ Created on Wed Apr 11 22:28:11 2018
 @author: Harshvardhan
 """
 
+import nibabel as nib
 import numpy as np
 import pandas as pd
 import scipy as sp
@@ -147,3 +148,11 @@ def add_site_covariates(args, X):
     augmented_X = pd.concat([biased_X, site_df], axis=1)
 
     return augmented_X
+
+
+def local_stats_images(args, X, y):
+    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask_6mm.nii')
+    mask_data = nib.load(mask_file).get_data()
+
+
+    return None

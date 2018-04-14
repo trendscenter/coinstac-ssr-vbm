@@ -5,7 +5,6 @@ This script includes the remote computations for single-shot ridge
 regression with decentralized statistic calculation
 """
 import json
-import pandas as pd
 import sys
 import scipy as sp
 import numpy as np
@@ -42,8 +41,13 @@ def remote_1(args):
     """
     input_list = args["input"]
     userId = list(input_list)[0]
-    y_labels = input_list[userId][
-        "y_labels"]  # don't like this line here because everyone has to sent the labels, but they should have been available at the remote itself by virtue of having specified in the compspec.json
+    y_labels = input_list[userId]["y_labels"]
+
+    """TODO:
+    I don't like the above line here because everyone has to sent the labels,
+    but they should have been available at the remote itself by virtue of
+    having specified in the compspec.json
+    """
 
     all_local_stats_dicts = [
         input_list[site]["local_stats_dict"] for site in input_list
