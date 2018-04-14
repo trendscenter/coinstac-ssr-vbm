@@ -10,6 +10,7 @@ import sys
 import scipy as sp
 import numpy as np
 import regression as reg
+from remote_ancillary import get_stats_to_dict
 
 
 def remote_1(args):
@@ -169,18 +170,13 @@ def remote_2(args):
     keys1 = [
         "avg_beta_vector", "r2_global", "ts_global", "ps_global", "dof_global"
     ]
-    values = pd.DataFrame(
-        list(
-            zip(avg_beta_vector, r_squared_global, ts_global, ps_global,
-                dof_global)),
-        columns=keys1)
-    global_dict_list = values.to_dict(orient='records')
+    global_dict_list = get_stats_to_dict(keys1, avg_beta_vector,
+                                         r_squared_global, ts_global,
+                                         ps_global, dof_global)
 
     # Print Everything
     keys2 = ["ROI", "global_stats", "local_stats"]
-    values3 = pd.DataFrame(
-        list(zip(y_labels, global_dict_list, a_dict)), columns=keys2)
-    dict_list = values3.to_dict(orient='records')
+    dict_list = get_stats_to_dict(keys2, y_labels, global_dict_list, a_dict)
 
     output_dict = {"regressions": dict_list}
 
