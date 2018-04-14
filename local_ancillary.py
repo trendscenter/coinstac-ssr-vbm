@@ -70,17 +70,15 @@ def local_stats_to_dict(X, y):
     pvalues = 2 * sp.stats.t.sf(np.abs(tvalues), dof_global)
 
     keys = ["beta", "sse", "pval", "tval", "rsquared"]
-    local_stats_list = []
 
-    for index, _ in enumerate(y.columns):
-        values = [
-            params[:, index].tolist(), sse[index], pvalues[:, index].tolist(),
-            tvalues[:, index].tolist(), rsquared[index]
-        ]
-        local_stats_dict = dict(zip(keys, values))
-        local_stats_list.append(local_stats_dict)
+    values1 = pd.DataFrame(list(
+        zip(params.T.tolist(),
+            sse.tolist(), pvalues.T.tolist(), tvalues.T.tolist(),
+            rsquared.tolist())), columns=keys)
 
-        beta_vector = params.T.tolist()
+    local_stats_list = values1.to_dict(orient='records')
+
+    beta_vector = params.T.tolist()
 
     return beta_vector, local_stats_list
 
