@@ -8,6 +8,7 @@ Created on Wed Apr 11 22:28:11 2018
 
 import nibabel as nib
 import numpy as np
+import os
 import pandas as pd
 import scipy as sp
 import warnings
@@ -60,7 +61,7 @@ def gather_local_stats_numba(X, y):
     return (params, sse, tvalues, rsquared, dof_global)
 
 
-def local_stats_to_dict(X, y):
+def local_stats_to_dict(args, X, y):
 
     X1 = sm.add_constant(X).values.astype('float64')
     y1 = y.values.astype('float64')
@@ -71,15 +72,17 @@ def local_stats_to_dict(X, y):
     pvalues = 2 * sp.stats.t.sf(np.abs(tvalues), dof_global)
 
     keys = ["beta", "sse", "pval", "tval", "rsquared"]
-
-    values1 = pd.DataFrame(list(
-        zip(params.T.tolist(),
-            sse.tolist(), pvalues.T.tolist(), tvalues.T.tolist(),
-            rsquared.tolist())), columns=keys)
+    values1 = pd.DataFrame(
+        list(
+            zip(params.T.tolist(), sse.tolist(), pvalues.T.tolist(),
+                tvalues.T.tolist(), rsquared.tolist())),
+        columns=keys)
 
     local_stats_list = values1.to_dict(orient='records')
 
     beta_vector = params.T.tolist()
+
+    make_params_images(args, X, params)
 
     return beta_vector, local_stats_list
 
@@ -148,11 +151,3 @@ def add_site_covariates(args, X):
     augmented_X = pd.concat([biased_X, site_df], axis=1)
 
     return augmented_X
-
-
-def local_stats_images(args, X, y):
-    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask_6mm.nii')
-    mask_data = nib.load(mask_file).get_data()
-
-
-    return None
