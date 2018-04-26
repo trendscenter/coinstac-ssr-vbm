@@ -9,7 +9,7 @@ import sys
 import scipy as sp
 import numpy as np
 import regression as reg
-from remote_ancillary import get_stats_to_dict
+from remote_ancillary import get_stats_to_dict, print_pvals
 
 
 def remote_1(args):
@@ -160,6 +160,14 @@ def remote_2(args):
         ps = reg.t_to_p(ts, dof_global[i])
         ts_global.append(ts)
         ps_global.append(ps)
+
+# =============================================================================
+#     # Begin nibabel code#
+# =============================================================================
+    print_pvals(args, ps_global, ts_global)
+# =============================================================================
+#     # End nibabel code#
+# =============================================================================
 
     # Block of code to print local stats as well
     sites = ['Site_' + str(i) for i in range(len(all_local_stats_dicts))]
