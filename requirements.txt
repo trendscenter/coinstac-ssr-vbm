@@ -1,3 +1,5 @@
+nibabel
+nilearn
 numba
 numpy
 pandas

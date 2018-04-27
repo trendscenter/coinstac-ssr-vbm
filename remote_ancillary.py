@@ -23,6 +23,8 @@ def get_stats_to_dict(a, *b):
 def print_pvals(args, ps_global, ts_global):
     p_df = pd.DataFrame(ps_global)
     t_df = pd.DataFrame(ts_global)
+
+    # TODO manual entry, remove later
     coords = (-5, 44, -12)
     images_folder = args["state"]["outputDirectory"]
 
@@ -42,7 +44,7 @@ def print_pvals(args, ps_global, ts_global):
             clipped_img,
             threshold=thresholdh * 0.5,
             cut_coords=coords,
-            output_file=os.path.join(images_folder, str(column)),
+            output_file=os.path.join(images_folder, 'pval_' +  str(column)),
             display_mode='ortho',
             colorbar=True)
 
