@@ -9,7 +9,7 @@ import sys
 import scipy as sp
 import numpy as np
 import regression as reg
-from remote_ancillary import get_stats_to_dict, print_pvals
+from remote_ancillary import get_stats_to_dict, print_pvals, print_beta_images
 
 
 def remote_1(args):
@@ -165,6 +165,7 @@ def remote_2(args):
 #     # Begin nibabel code#
 # =============================================================================
     print_pvals(args, ps_global, ts_global)
+    print_beta_images(args, avg_beta_vector)
 # =============================================================================
 #     # End nibabel code#
 # =============================================================================

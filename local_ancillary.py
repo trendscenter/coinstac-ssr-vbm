@@ -7,7 +7,6 @@ Created on Wed Apr 11 22:28:11 2018
 """
 
 import numpy as np
-import os
 import pandas as pd
 import scipy as sp
 import warnings
@@ -60,7 +59,7 @@ def gather_local_stats_numba(X, y):
     return (params, sse, tvalues, rsquared, dof_global)
 
 
-def local_stats_to_dict(args, X, y):
+def local_stats_to_dict(X, y):
 
     X1 = sm.add_constant(X).values.astype('float64')
     y1 = y.values.astype('float64')
@@ -80,8 +79,6 @@ def local_stats_to_dict(args, X, y):
     local_stats_list = values1.to_dict(orient='records')
 
     beta_vector = params.T.tolist()
-
-    make_params_images(args, X, params)
 
     return beta_vector, local_stats_list
 
