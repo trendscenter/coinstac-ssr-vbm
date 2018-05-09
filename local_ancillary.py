@@ -18,6 +18,7 @@ with warnings.catch_warnings():
 
 
 def mean_and_len_y(y):
+    """Caculate the length mean of each y vector"""
     meanY_vector = y.mean(axis=0).tolist()
     lenY_vector = y.count(axis=0).tolist()
 
@@ -25,7 +26,8 @@ def mean_and_len_y(y):
 
 
 @jit(nopython=True)
-def gather_local_stats_numba(X, y):
+def gather_local_stats(X, y):
+    """Calculate local statistics"""
     size_y = y.shape[1]
 
     params = np.zeros((X.shape[1], size_y))
@@ -59,17 +61,17 @@ def gather_local_stats_numba(X, y):
     return (params, sse, tvalues, rsquared, dof_global)
 
 
-def local_stats_to_dict(X, y):
-
+def local_stats_to_dict_numba(X, y):
+    """Wrap local statistics into a dictionary to be sent to the remote"""
     X1 = sm.add_constant(X).values.astype('float64')
     y1 = y.values.astype('float64')
 
-    params, sse, tvalues, rsquared, dof_global = gather_local_stats_numba(
-        X1, y1)
+    params, sse, tvalues, rsquared, dof_global = gather_local_stats(X1, y1)
 
     pvalues = 2 * sp.stats.t.sf(np.abs(tvalues), dof_global)
 
     keys = ["beta", "sse", "pval", "tval", "rsquared"]
+
     values1 = pd.DataFrame(
         list(
             zip(params.T.tolist(), sse.tolist(), pvalues.T.tolist(),
@@ -83,13 +85,11 @@ def local_stats_to_dict(X, y):
     return beta_vector, local_stats_list
 
 
-def gather_local_stats(args, X, y):
-
+def local_stats_to_dict(X, y):
+    """Calculate local statistics"""
     y_labels = list(y.columns)
 
     biased_X = sm.add_constant(X)
-
-    meanY_vector, lenY_vector = [], []
 
     local_params = []
     local_sse = []
@@ -99,8 +99,6 @@ def gather_local_stats(args, X, y):
 
     for column in y.columns:
         curr_y = list(y[column])
-        meanY_vector.append(np.mean(curr_y))
-        lenY_vector.append(len(y))
 
         # Printing local stats as well
         model = sm.OLS(curr_y, biased_X.astype(float)).fit()
@@ -124,10 +122,11 @@ def gather_local_stats(args, X, y):
 
         beta_vector = [l.tolist() for l in local_params]
 
-    return beta_vector, meanY_vector, lenY_vector, local_stats_list
+    return beta_vector, local_stats_list
 
 
 def add_site_covariates(args, X):
+    """Add site specific columns to the covariate matrix"""
     biased_X = sm.add_constant(X)
     site_covar_list = args["input"]["site_covar_list"]
 

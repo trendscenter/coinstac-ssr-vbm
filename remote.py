@@ -43,7 +43,7 @@ def remote_1(args):
     userId = list(input_list)[0]
     y_labels = input_list[userId]["y_labels"]
 
-    """TODO:
+    """ TODO:
     I don't like the above line here because everyone has to sent the labels,
     but they should have been available at the remote itself by virtue of
     having specified in the compspec.json
@@ -132,10 +132,11 @@ def remote_2(args):
 
     """
     input_list = args["input"]
+    cache_list = args["cache"]
+
     y_labels = args["cache"]["y_labels"]
     all_local_stats_dicts = args["cache"]["local_stats_dict"]
 
-    cache_list = args["cache"]
     avg_beta_vector = cache_list["avg_beta_vector"]
     dof_global = cache_list["dof_global"]
 
