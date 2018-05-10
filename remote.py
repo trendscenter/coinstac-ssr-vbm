@@ -43,12 +43,6 @@ def remote_1(args):
     userId = list(input_list)[0]
     y_labels = input_list[userId]["y_labels"]
 
-    """ TODO:
-    I don't like the above line here because everyone has to sent the labels,
-    but they should have been available at the remote itself by virtue of
-    having specified in the compspec.json
-    """
-
     all_local_stats_dicts = [
         input_list[site]["local_stats_dict"] for site in input_list
     ]
@@ -162,14 +156,10 @@ def remote_2(args):
         ts_global.append(ts)
         ps_global.append(ps)
 
-# =============================================================================
-#     # Begin nibabel code#
-# =============================================================================
+    # Begin nibabel code#
     print_pvals(args, ps_global, ts_global)
     print_beta_images(args, avg_beta_vector)
-# =============================================================================
-#     # End nibabel code#
-# =============================================================================
+    # End nibabel code#
 
     # Block of code to print local stats as well
     sites = ['Site_' + str(i) for i in range(len(all_local_stats_dicts))]
