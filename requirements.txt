@@ -1,10 +1,12 @@
 matplotlib
-nibabel
 nilearn
 numba
-numpy
-pandas
 scikit-learn
-scipy
 statsmodels
 ujson
+
+#################################################################
+# 1) matplotlib, scikit-learn, and scipy are needed for nilearn #
+# 2) statsmodels installs numpy, scipy, pandas                  #
+# 3) nilearn installs nibabel                                   #
+#################################################################
