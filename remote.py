@@ -161,30 +161,30 @@ def remote_2(args):
     print_beta_images(args, avg_beta_vector)
     # End nibabel code#
 
-    # Block of code to print local stats as well
-    sites = ['Site_' + str(i) for i in range(len(all_local_stats_dicts))]
+#    # Block of code to print local stats as well
+#    sites = ['Site_' + str(i) for i in range(len(all_local_stats_dicts))]
+#
+#    all_local_stats_dicts = list(map(list, zip(*all_local_stats_dicts)))
+#
+#    a_dict = [{key: value
+#               for key, value in zip(sites, stats_dict)}
+#              for stats_dict in all_local_stats_dicts]
+#
+#    # Block of code to print just global stats
+#    keys1 = [
+#        "avg_beta_vector", "r2_global", "ts_global", "ps_global", "dof_global"
+#    ]
+#    global_dict_list = get_stats_to_dict(keys1, avg_beta_vector,
+#                                         r_squared_global, ts_global,
+#                                         ps_global, dof_global)
+#
+#    # Print Everything
+#    keys2 = ["ROI", "global_stats", "local_stats"]
+#    dict_list = get_stats_to_dict(keys2, y_labels, global_dict_list, a_dict)
+#
+#    output_dict = {"regressions": dict_list}
 
-    all_local_stats_dicts = list(map(list, zip(*all_local_stats_dicts)))
-
-    a_dict = [{key: value
-               for key, value in zip(sites, stats_dict)}
-              for stats_dict in all_local_stats_dicts]
-
-    # Block of code to print just global stats
-    keys1 = [
-        "avg_beta_vector", "r2_global", "ts_global", "ps_global", "dof_global"
-    ]
-    global_dict_list = get_stats_to_dict(keys1, avg_beta_vector,
-                                         r_squared_global, ts_global,
-                                         ps_global, dof_global)
-
-    # Print Everything
-    keys2 = ["ROI", "global_stats", "local_stats"]
-    dict_list = get_stats_to_dict(keys2, y_labels, global_dict_list, a_dict)
-
-    output_dict = {"regressions": dict_list}
-
-    computation_output = {"output": output_dict, "success": True}
+    computation_output = {"output": 'output_dict', "success": True}
 
     return json.dumps(computation_output)
 
