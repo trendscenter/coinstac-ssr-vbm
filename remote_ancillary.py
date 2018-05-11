@@ -58,18 +58,10 @@ def print_pvals(args, ps_global, ts_global):
 
         clipped_img = nib.Nifti1Image(new_data, mask.affine, mask.header)
 
-#        thresholdh = max(np.abs(p_df[column]))
+        #        thresholdh = max(np.abs(p_df[column]))
 
         plotting.plot_stat_map(
             clipped_img,
             output_file=os.path.join(images_folder, 'pval_' + str(column)),
             display_mode='ortho',
             colorbar=True)
-
-        if 'display' in locals():
-            plotting.plot_stat_map(
-                clipped_img,
-                cut_coords=display.cut_coords)
-        else:
-            display = plotting.plot_stat_map(
-                clipped_img)

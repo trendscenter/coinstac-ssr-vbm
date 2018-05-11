@@ -4,10 +4,12 @@
 This script includes the remote computations for single-shot ridge
 regression with decentralized statistic calculation
 """
+import base64
 import ujson as json
 import sys
 import scipy as sp
 import numpy as np
+import os
 import regression as reg
 from remote_ancillary import get_stats_to_dict, print_pvals, print_beta_images
 
@@ -74,7 +76,7 @@ def remote_1(args):
         "mean_y_global": mean_y_global.tolist(),
         "dof_global": dof_global.tolist(),
         "y_labels": y_labels,
-        "local_stats_dict": all_local_stats_dicts
+        "local_stats_dict": all_local_stats_dicts,
     }
 
     computation_output = {
@@ -127,6 +129,15 @@ def remote_2(args):
     """
     input_list = args["input"]
     cache_list = args["cache"]
+
+#    mrn_image = os.path.join(args["state"]["baseDirectory"], 'logo_2.png')
+#    with open(mrn_image, "rb") as imageFile:
+#        mrn_image_str = base64.b64encode(imageFile.read())
+#
+#    with open(
+#            os.path.join(args["state"]["outputDirectory"], "imageToSave.png"),
+#            "wb") as fh:
+#        fh.write(base64.b64decode(mrn_image_str))
 
     y_labels = args["cache"]["y_labels"]
     all_local_stats_dicts = args["cache"]["local_stats_dict"]
