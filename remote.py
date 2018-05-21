@@ -130,15 +130,6 @@ def remote_2(args):
     input_list = args["input"]
     cache_list = args["cache"]
 
-#    mrn_image = os.path.join(args["state"]["baseDirectory"], 'logo_2.png')
-#    with open(mrn_image, "rb") as imageFile:
-#        mrn_image_str = base64.b64encode(imageFile.read())
-#
-#    with open(
-#            os.path.join(args["state"]["outputDirectory"], "imageToSave.png"),
-#            "wb") as fh:
-#        fh.write(base64.b64decode(mrn_image_str))
-
     y_labels = args["cache"]["y_labels"]
     all_local_stats_dicts = args["cache"]["local_stats_dict"]
 
@@ -172,30 +163,46 @@ def remote_2(args):
     print_beta_images(args, avg_beta_vector)
     # End nibabel code#
 
-    # Block of code to print local stats as well
-    sites = ['Site_' + str(i) for i in range(len(all_local_stats_dicts))]
+    # Begin code to serialize png images
+    png_files = os.listdir(args["state"]["outputDirectory"])
 
-    all_local_stats_dicts = list(map(list, zip(*all_local_stats_dicts)))
+    encoded_png_files = []
+    for file in png_files:
+        if file.endswith('.png'):
+            mrn_image = os.path.join(args["state"]["outputDirectory"], file)
+            with open(mrn_image, "rb") as imageFile:
+                mrn_image_str = base64.b64encode(imageFile.read())
+            encoded_png_files.append(mrn_image_str)
 
-    a_dict = [{key: value
-               for key, value in zip(sites, stats_dict)}
-              for stats_dict in all_local_stats_dicts]
-
-    # Block of code to print just global stats
-    keys1 = [
-        "avg_beta_vector", "r2_global", "ts_global", "ps_global", "dof_global"
-    ]
-    global_dict_list = get_stats_to_dict(keys1, avg_beta_vector,
-                                         r_squared_global, ts_global,
-                                         ps_global, dof_global)
-
-    # Print Everything
-    keys2 = ["ROI", "global_stats", "local_stats"]
-    dict_list = get_stats_to_dict(keys2, y_labels, global_dict_list, a_dict)
-
-    output_dict = {"regressions": dict_list}
+    output_dict = dict(zip(png_files, encoded_png_files))
 
     computation_output = {"output": output_dict, "success": True}
+    # End code to serialize png images
+
+#    # Block of code to print local stats as well
+#    sites = ['Site_' + str(i) for i in range(len(all_local_stats_dicts))]
+#
+#    all_local_stats_dicts = list(map(list, zip(*all_local_stats_dicts)))
+#
+#    a_dict = [{key: value
+#               for key, value in zip(sites, stats_dict)}
+#              for stats_dict in all_local_stats_dicts]
+#
+#    # Block of code to print just global stats
+#    keys1 = [
+#        "avg_beta_vector", "r2_global", "ts_global", "ps_global", "dof_global"
+#    ]
+#    global_dict_list = get_stats_to_dict(keys1, avg_beta_vector,
+#                                         r_squared_global, ts_global,
+#                                         ps_global, dof_global)
+#
+#    # Print Everything
+#    keys2 = ["ROI", "global_stats", "local_stats"]
+#    dict_list = get_stats_to_dict(keys2, y_labels, global_dict_list, a_dict)
+#
+#    output_dict = {"regressions": dict_list}
+#
+#    computation_output = {"output": output_dict, "success": True}
 
     return json.dumps(computation_output)
 
