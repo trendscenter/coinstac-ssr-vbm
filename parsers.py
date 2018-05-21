@@ -70,18 +70,25 @@ def fsl_parser(args):
 
 def nifti_to_data(args, X_files, y_files):
     """Read nifti files as matrices"""
-    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask_6mm.nii')
-    mask_data = nib.load(mask_file).get_data()
+    try:
+        mask_file = os.path.join(args["state"]["baseDirectory"],
+                                 'mask_6mm.nii')
+        mask_data = nib.load(mask_file).get_data()
+    except FileNotFoundError:
+        print("Mask is missing from the site")
 
     appended_data = []
 
     # Extract Data (after applying mask)
     for image in X_files:
         if image in y_files:
-            image_data = nib.load(
-                os.path.join(args["state"]["baseDirectory"],
-                             image)).get_data()
-            appended_data.append(image_data[mask_data > 0])
+            try:
+                image_data = nib.load(
+                    os.path.join(args["state"]["baseDirectory"],
+                                 image)).get_data()
+                appended_data.append(image_data[mask_data > 0])
+            except FileNotFoundError:
+                continue
 
     return appended_data
 
