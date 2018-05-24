@@ -43,6 +43,8 @@ def remote_1(args):
     """
     input_list = args["input"]
     userId = list(input_list)[0]
+
+    X_labels = input_list[userId]["X_labels"]
     y_labels = input_list[userId]["y_labels"]
 
     all_local_stats_dicts = [
@@ -75,6 +77,7 @@ def remote_1(args):
         "avg_beta_vector": avg_beta_vector.tolist(),
         "mean_y_global": mean_y_global.tolist(),
         "dof_global": dof_global.tolist(),
+        "X_labels": X_labels,
         "y_labels": y_labels,
         "local_stats_dict": all_local_stats_dicts,
     }
@@ -130,7 +133,7 @@ def remote_2(args):
     input_list = args["input"]
     cache_list = args["cache"]
 
-    y_labels = args["cache"]["y_labels"]
+    X_labels = args["cache"]["X_labels"]
     all_local_stats_dicts = args["cache"]["local_stats_dict"]
 
     avg_beta_vector = cache_list["avg_beta_vector"]
@@ -158,10 +161,8 @@ def remote_2(args):
         ts_global.append(ts)
         ps_global.append(ps)
 
-    # Begin nibabel code#
-    print_pvals(args, ps_global, ts_global)
-    print_beta_images(args, avg_beta_vector)
-    # End nibabel code#
+    print_pvals(args, ps_global, ts_global, X_labels)
+    print_beta_images(args, avg_beta_vector, X_labels)
 
     # Begin code to serialize png images
     png_files = sorted(os.listdir(args["state"]["outputDirectory"]))
@@ -173,36 +174,21 @@ def remote_2(args):
             with open(mrn_image, "rb") as imageFile:
                 mrn_image_str = base64.b64encode(imageFile.read())
             encoded_png_files.append(mrn_image_str)
-
-    output_dict = dict(zip(png_files, encoded_png_files))
-
-    computation_output = {"output": output_dict, "success": True}
     # End code to serialize png images
 
-#    # Block of code to print local stats as well
-#    sites = ['Site_' + str(i) for i in range(len(all_local_stats_dicts))]
-#
-#    all_local_stats_dicts = list(map(list, zip(*all_local_stats_dicts)))
-#
-#    a_dict = [{key: value
-#               for key, value in zip(sites, stats_dict)}
-#              for stats_dict in all_local_stats_dicts]
-#
-#    # Block of code to print just global stats
-#    keys1 = [
-#        "avg_beta_vector", "r2_global", "ts_global", "ps_global", "dof_global"
-#    ]
-#    global_dict_list = get_stats_to_dict(keys1, avg_beta_vector,
-#                                         r_squared_global, ts_global,
-#                                         ps_global, dof_global)
-#
-#    # Print Everything
-#    keys2 = ["ROI", "global_stats", "local_stats"]
-#    dict_list = get_stats_to_dict(keys2, y_labels, global_dict_list, a_dict)
-#
-#    output_dict = {"regressions": dict_list}
-#
-#    computation_output = {"output": output_dict, "success": True}
+    # Block of code to print local stats as well
+    sites = [site for site in input_list]
+
+    all_local_stats_dicts = dict(zip(sites, all_local_stats_dicts))
+
+    # Block of code to print just global stats
+    global_dict_list = dict(zip(png_files, encoded_png_files))
+
+    # Print Everything
+    keys2 = ["global_stats", "local_stats"]
+    output_dict = dict(zip(keys2, [global_dict_list, all_local_stats_dicts]))
+
+    computation_output = {"output": output_dict, "success": True}
 
     return json.dumps(computation_output)
 

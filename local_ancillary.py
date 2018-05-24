@@ -139,7 +139,7 @@ def local_stats_to_dict_numba(args, X, y):
     print_beta_images(args, beta_vector, X_labels)
 
     # Begin code to serialize png images
-    png_files = os.listdir(args["state"]["outputDirectory"])
+    png_files = sorted(os.listdir(args["state"]["outputDirectory"]))
 
     encoded_png_files = []
     for file in png_files:
