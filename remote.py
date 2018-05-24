@@ -164,7 +164,7 @@ def remote_2(args):
     # End nibabel code#
 
     # Begin code to serialize png images
-    png_files = os.listdir(args["state"]["outputDirectory"])
+    png_files = sorted(os.listdir(args["state"]["outputDirectory"]))
 
     encoded_png_files = []
     for file in png_files:
