@@ -8,6 +8,7 @@ Created on Wed Mar 21 19:25:26 2018
 import os
 import pandas as pd
 import nibabel as nib
+import numpy as np
 
 
 def parse_for_y(args, y_files, y_labels):
@@ -75,20 +76,25 @@ def nifti_to_data(args, X):
                                  'mask_6mm.nii')
         mask_data = nib.load(mask_file).get_data()
     except FileNotFoundError:
-        print("Mask is missing from the site")
+        raise Exception("Missing Mask at " + args["state"]["clientId"])
 
     appended_data = []
 
     # Extract Data (after applying mask)
     for image in X.index:
-            try:
-                image_data = nib.load(
-                    os.path.join(args["state"]["baseDirectory"],
-                                 image)).get_data()
-                appended_data.append(image_data[mask_data > 0])
-            except FileNotFoundError:
+        try:
+            image_data = nib.load(
+                os.path.join(args["state"]["baseDirectory"],
+                             image)).get_data()
+            if np.all(np.isnan(image_data)) or np.count_nonzero(
+                    image_data) == 0 or image_data.size == 0:
                 X.drop(index=image, inplace=True)
                 continue
+            else:
+                appended_data.append(image_data[mask_data > 0])
+        except FileNotFoundError:
+            X.drop(index=image, inplace=True)
+            continue
 
     y = pd.DataFrame.from_records(appended_data)
 
