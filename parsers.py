@@ -5,10 +5,10 @@ Created on Wed Mar 21 19:25:26 2018
 
 @author: Harshvardhan
 """
-import os
-import pandas as pd
 import nibabel as nib
 import numpy as np
+import os
+import pandas as pd
 
 
 def parse_for_y(args, y_files, y_labels):
@@ -16,18 +16,22 @@ def parse_for_y(args, y_files, y_labels):
     y = pd.DataFrame(index=y_labels)
 
     for file in y_files:
-        try:
-            y_ = pd.read_csv(
-                os.path.join(args["state"]["baseDirectory"], file),
-                sep='\t',
-                header=None,
-                names=['Measure:volume', file],
-                index_col=0)
-            y_ = y_[~y_.index.str.contains("Measure:volume")]
-            y_ = y_.apply(pd.to_numeric, errors='ignore')
-            y = pd.merge(y, y_, how='left', left_index=True, right_index=True)
-        except pd.errors.EmptyDataError:
-            continue
+        if file:
+            try:
+                y_ = pd.read_csv(
+                    os.path.join(args["state"]["baseDirectory"], file),
+                    sep='\t',
+                    header=None,
+                    names=['Measure:volume', file],
+                    index_col=0)
+                y_ = y_[~y_.index.str.contains("Measure:volume")]
+                y_ = y_.apply(pd.to_numeric, errors='ignore')
+                y = pd.merge(
+                    y, y_, how='left', left_index=True, right_index=True)
+            except pd.errors.EmptyDataError:
+                continue
+            except FileNotFoundError:
+                continue
 
     y = y.T
 
@@ -63,8 +67,13 @@ def fsl_parser(args):
     X = X.reindex(sorted(X.columns), axis=1)
 
     ixs = X.index.intersection(y.index)
-    X = X.loc[ixs]
-    y = y.loc[ixs]
+
+    if ixs.empty:
+        raise Exception('No common X and y files at ' +
+                        args["state"]["clientId"])
+    else:
+        X = X.loc[ixs]
+        y = y.loc[ixs]
 
     return (X, y)
 
