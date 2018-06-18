@@ -58,7 +58,8 @@
 ["M02181525_swc1t1avg_6mm.nii", false, 41, "M"],
 ["M02189654_swc1t1avg_6mm.nii", false, 44, "F"],
 ["M02192461_swc1t1avg_6mm.nii", false, 40, "F"],
-["M02196211_swc1t1avg_6mm.nii", false, 44, "M"]
+["M02196211_swc1t1avg_6mm.nii", false, 44, "M"],
+["mask_6mm.nii"]
  ]
 
       ],
@@ -253,7 +254,8 @@
 ["M52296258_swc1t1_brain_6mm.nii", false, 23, "M"],
 ["M52297972_swc1t1_brain_6mm.nii", false, 44, "F"],
 ["M52298177_swc1t1_brain_6mm.nii", false, 23, "M"],
-["M52299968_swc1t1_brain_6mm.nii", false, 33, "M"]
+["M52299968_swc1t1_brain_6mm.nii", false, 33, "M"],
+["mask_6mm.nii"]
  ]
 
       ],
@@ -451,7 +453,8 @@
 ["M55482668_swc1t1r1_brain_6mm.nii", false, 23, "F"],
 ["M55486248_swc1t1r1_brain_6mm.nii", false, 27, "M"],
 ["M55495297_swc1t1r1_brain_6mm.nii", false, 23, "F"],
-["M55499484_swc1t1r1_brain_6mm.nii", false, 24, "F"]
+["M55499484_swc1t1r1_brain_6mm.nii", false, 24, "F"],
+["mask_6mm.nii"]
  ]
 
       ],
@@ -628,7 +631,8 @@
 ["M87182532_swc1Re_t1avg_6mm.nii", false, 31, "M"],
 ["M87183498_swc1Re_t1avg_6mm.nii", false, 18, "M"],
 ["M87192710_swc1Re_t1avg_6mm.nii", false, 21, "F"],
-["M87195595_swc1Re_t1avg_6mm.nii", false, 23, "F"]
+["M87195595_swc1Re_t1avg_6mm.nii", false, 23, "F"],
+["mask_6mm.nii"]
  ]
 
       ],
