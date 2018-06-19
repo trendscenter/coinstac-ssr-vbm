@@ -54,6 +54,7 @@ def local_1(args):
     (X, y) = vbm_parser(args)
 
     y_labels = list(y.columns)
+    raise Exception('hi there')
 
     lamb = input_list["lambda"]
 
