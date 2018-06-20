@@ -135,4 +135,8 @@ def vbm_parser(args):
 
     y.columns = ['{}_{}'.format('voxel', str(i)) for i in y.columns]
 
+    if not y:
+        raise Exception(
+            'Could not find .nii files specified in the covariates csv')
+
     return (X, y)
