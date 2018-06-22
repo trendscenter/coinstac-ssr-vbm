@@ -3,7 +3,7 @@
     "name": "single shot regression demo",
     "id": "ssr_vbm",
     "version": "v1.0.0",
-    "repository": "https:\/\/github.com\/MRN-Code\/coinstac_ssr_vbm_mcic",
+    "repository": "https:\/\/github.com\/MRN-Code\/coinstac_ssr_vbm",
     "description": "a test from single shot regresssion"
   },
   "computation": {
