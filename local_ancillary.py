@@ -82,7 +82,7 @@ def print_beta_images(args, avg_beta_vector, X_labels):
             clipped_img,
             output_file=os.path.join(images_folder, 'beta_' + str(column)),
             display_mode='ortho',
-            colorbar=True)
+            colorbar=True, cmap='bwr')
 
 
 def print_pvals(args, ps_global, ts_global, X_labels):
@@ -108,7 +108,7 @@ def print_pvals(args, ps_global, ts_global, X_labels):
             clipped_img,
             output_file=os.path.join(images_folder, 'pval_' + str(column)),
             display_mode='ortho',
-            colorbar=True)
+            colorbar=True, cmap='bwr')
 
 
 def local_stats_to_dict_numba(args, X, y):
