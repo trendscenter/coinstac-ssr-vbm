@@ -106,6 +106,10 @@ def nifti_to_data(args, X):
 
     y = pd.DataFrame.from_records(appended_data)
 
+    if y.empty:
+        raise Exception(
+            'Could not find .nii files specified in the covariates csv')
+
     return X, y
 
 
