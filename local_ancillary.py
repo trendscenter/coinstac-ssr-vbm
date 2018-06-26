@@ -82,7 +82,9 @@ def print_beta_images(args, avg_beta_vector, X_labels):
             clipped_img,
             output_file=os.path.join(images_folder, 'beta_' + str(column)),
             display_mode='ortho',
-            colorbar=True, cmap='bwr')
+            colorbar=True,
+            cmap='bwr',
+            cut_coords=(1, -15, 0))
 
 
 def print_pvals(args, ps_global, ts_global, X_labels):
@@ -102,13 +104,15 @@ def print_pvals(args, ps_global, ts_global, X_labels):
 
         clipped_img = nib.Nifti1Image(new_data, mask.affine, mask.header)
 
-        #        thresholdh = max(np.abs(p_df[column]))
-
         plotting.plot_stat_map(
             clipped_img,
-            output_file=os.path.join(images_folder, 'pval_' + str(column)),
+            output_file=os.path.join(
+                images_folder,
+                '-log10(pval_' + str(column) + ') * sign(t-val)'),
             display_mode='ortho',
-            colorbar=True, cmap='bwr')
+            colorbar=True,
+            cmap='bwr',
+            cut_coords=(1, -15, 0))
 
 
 def local_stats_to_dict_numba(args, X, y):

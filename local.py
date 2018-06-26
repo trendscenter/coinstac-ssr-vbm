@@ -11,7 +11,7 @@ import sys
 import regression as reg
 import warnings
 from parsers import vbm_parser
-from local_ancillary import mean_and_len_y, local_stats_to_dict_numba, print_pvals, print_beta_images
+from local_ancillary import mean_and_len_y, local_stats_to_dict_numba
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")

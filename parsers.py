@@ -137,10 +137,6 @@ def vbm_parser(args):
 
     X, y = nifti_to_data(args, X)
 
-    y.columns = ['{}_{}'.format('voxel', str(i)) for i in y.columns]
-
-    if y.empty:
-        raise Exception(
-            'Could not find .nii files specified in the covariates csv')
+    y.columns = ['{}_{:04}'.format('voxel', i) for i in y.columns]
 
     return (X, y)
