@@ -64,7 +64,7 @@ def print_pvals(args, ps_global, ts_global, X_labels):
             clipped_img,
             output_file=os.path.join(
                 images_folder,
-                '-log10(pval_' + str(column) + ') * sign(tval)'),
+                '-log10(pval_' + str(column) + ')*sign(tval)'),
             display_mode='ortho',
             colorbar=True,
             cmap='bwr',
