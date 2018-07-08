@@ -136,7 +136,7 @@ def vbm_parser(args):
     X.dropna(axis=0, how='any', inplace=True)
 
     X, y = nifti_to_data(args, X)
-    X = X.reindex_axis(sorted(X.columns), axis=1)
+    X = X.reindex(sorted(X.columns), axis=1)
 
     y.columns = ['{}_{:04}'.format('voxel', i) for i in y.columns]
 
