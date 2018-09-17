@@ -81,7 +81,8 @@ def fsl_parser(args):
 def nifti_to_data(args, X):
     """Read nifti files as matrices"""
     try:
-        mask_file = os.path.join('/computation/mask.nii')
+        mask_file = os.path.join(args["state"]["baseDirectory"],
+                                 'mask_6mm.nii')
         mask_data = nib.load(mask_file).get_data()
     except FileNotFoundError:
         raise Exception("Missing Mask at " + args["state"]["clientId"])
@@ -119,7 +120,6 @@ def vbm_parser(args):
     X_labels = X_info[1]
 
     X_df = pd.DataFrame.from_records(X_data)
-
     X_df.columns = X_df.iloc[0]
     X_df = X_df.reindex(X_df.index.drop(0))
     X_df.set_index(X_df.columns[0], inplace=True)

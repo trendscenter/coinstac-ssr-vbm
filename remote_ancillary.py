@@ -20,12 +20,12 @@ def get_stats_to_dict(a, *b):
     return dict_list
 
 
-def print_beta_images(args, avg_beta_vector):
-    beta_df = pd.DataFrame(avg_beta_vector)
+def print_beta_images(args, avg_beta_vector, X_labels):
+    beta_df = pd.DataFrame(avg_beta_vector, columns=X_labels)
 
     images_folder = args["state"]["outputDirectory"]
 
-    mask_file = os.path.join('/computation/mask.nii')
+    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask_6mm.nii')
     mask = nib.load(mask_file)
 
     for column in beta_df.columns:
@@ -41,14 +41,14 @@ def print_beta_images(args, avg_beta_vector):
             colorbar=True)
 
 
-def print_pvals(args, ps_global, ts_global):
-    p_df = pd.DataFrame(ps_global)
-    t_df = pd.DataFrame(ts_global)
+def print_pvals(args, ps_global, ts_global, X_labels):
+    p_df = pd.DataFrame(ps_global, columns=X_labels)
+    t_df = pd.DataFrame(ts_global, columns=X_labels)
 
     # TODO manual entry, remove later
     images_folder = args["state"]["outputDirectory"]
 
-    mask_file = os.path.join('/computation/mask.nii')
+    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask_6mm.nii')
     mask = nib.load(mask_file)
 
     for column in p_df.columns:
@@ -58,18 +58,10 @@ def print_pvals(args, ps_global, ts_global):
 
         clipped_img = nib.Nifti1Image(new_data, mask.affine, mask.header)
 
-#        thresholdh = max(np.abs(p_df[column]))
+        #        thresholdh = max(np.abs(p_df[column]))
 
         plotting.plot_stat_map(
             clipped_img,
             output_file=os.path.join(images_folder, 'pval_' + str(column)),
             display_mode='ortho',
             colorbar=True)
-
-#        if 'display' in locals():
-#            plotting.plot_stat_map(
-#                clipped_img,
-#                cut_coords=display.cut_coords)
-#        else:
-#            display = plotting.plot_stat_map(
-#                clipped_img)
