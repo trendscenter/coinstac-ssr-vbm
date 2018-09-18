@@ -69,7 +69,7 @@ def print_beta_images(args, avg_beta_vector, X_labels):
 
     images_folder = args["state"]["outputDirectory"]
 
-    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask.nii')
+    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask_4mm.nii')
     mask = nib.load(mask_file)
 
     for column in beta_df.columns:
@@ -92,7 +92,7 @@ def print_pvals(args, ps_global, ts_global, X_labels):
     # TODO manual entry, remove later
     images_folder = args["state"]["outputDirectory"]
 
-    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask.nii')
+    mask_file = os.path.join(args["state"]["baseDirectory"], 'mask_4mm.nii')
     mask = nib.load(mask_file)
 
     for column in p_df.columns:
