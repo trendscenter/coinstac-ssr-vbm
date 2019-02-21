@@ -4,18 +4,17 @@
 This script includes the local computations for single-shot ridge
 regression with decentralized statistic calculation
 """
+import warnings
+warnings.simplefilter("ignore")
+    
 import ujson as json
 import numpy as np
 import pandas as pd
+import statsmodels.api as sm
 import sys
 import regression as reg
-import warnings
 from parsers import vbm_parser
-from local_ancillary import mean_and_len_y, local_stats_to_dict_numba, print_pvals, print_beta_images
-
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    import statsmodels.api as sm
+from local_ancillary import mean_and_len_y, local_stats_to_dict_numba
 
 
 def local_1(args):
