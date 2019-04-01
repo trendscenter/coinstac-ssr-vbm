@@ -59,7 +59,7 @@ def fsl_parser(args):
 
 def nifti_to_data(args, X_files, y_files):
     """Read nifti files as matrices"""
-    mask_file = os.path.join('/computation', 'mask_6mm.nii')
+    mask_file = os.path.join('/computation', 'mask_4mm.nii')
     mask_data = nib.load(mask_file).get_data()
 
     appended_data = []
