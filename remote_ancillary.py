@@ -5,13 +5,11 @@ Created on Sat Apr 14 14:56:41 2018
 
 @author: Harshvardhan
 """
-
 import nibabel as nib
-from nilearn import plotting
 import numpy as np
 import os
 import pandas as pd
-
+from nilearn import plotting
 
 def get_stats_to_dict(a, *b):
     df = pd.DataFrame(list(zip(*b)), columns=a)
@@ -26,6 +24,7 @@ def print_beta_images(args, avg_beta_vector, X_labels):
     images_folder = args["state"]["outputDirectory"]
 
     mask_file = os.path.join('/computation', 'mask_4mm.nii')
+
     mask = nib.load(mask_file)
 
     for column in beta_df.columns:
@@ -49,6 +48,7 @@ def print_pvals(args, ps_global, ts_global, X_labels):
     images_folder = args["state"]["outputDirectory"]
 
     mask_file = os.path.join('/computation', 'mask_4mm.nii')
+
     mask = nib.load(mask_file)
 
     for column in p_df.columns:

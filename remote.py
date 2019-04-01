@@ -5,12 +5,12 @@ This script includes the remote computations for single-shot ridge
 regression with decentralized statistic calculation
 """
 import base64
-import ujson as json
-import sys
-import scipy as sp
 import numpy as np
 import os
 import regression as reg
+import sys
+import scipy as sp
+import ujson as json
 from remote_ancillary import get_stats_to_dict, print_pvals, print_beta_images
 
 
