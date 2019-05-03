@@ -65,6 +65,11 @@ def remote_1(args):
         mean_y_global, axis=0) / np.sum(
             count_y_local, axis=0)
     
+#    # Weighted Average
+#    beta_vector_local = [input_list[site]["beta_vector_local"] for site in input_list]
+#    weighted_local_beta = np.array(beta_vector_local) * np.array(count_y_local)
+#    avg_beta_vector1 = np.sum(weighted_local_beta, axis=0) / np.sum(count_y_local, axis=0)
+
     dof_global = sum(count_y_local) - avg_beta_vector.shape[1]
     
     output_dict = {
