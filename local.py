@@ -50,16 +50,16 @@ def local_1(args):
     """
     input_list = args["input"]
     (X, y) = vbm_parser(args)
-
+    
     X_labels = ['const'] + list(X.columns)
     y_labels = list(y.columns)
-
+    
     lamb = input_list["lambda"]
 
     meanY_vector, lenY_vector = mean_and_len_y(y)
-
+    
     beta_vector, local_stats_list = local_stats_to_dict_numba(args, X, y)
-
+    
     output_dict = {
         "beta_vector_local": beta_vector,
         "mean_y_local": meanY_vector,
@@ -71,8 +71,8 @@ def local_1(args):
     }
 
     cache_dict = {
-        "covariates": X.to_json(orient='records'),
-        "dependents": y.to_json(orient='records'),
+        "covariates": X.to_json(orient='split'),
+        "dependents": y.to_json(orient='split'),
         "lambda": lamb
     }
 
@@ -118,23 +118,25 @@ def local_2(args):
     cache_list = args["cache"]
     input_list = args["input"]
 
-    X = pd.read_json(cache_list["covariates"], orient='records')
-    y = pd.read_json(cache_list["dependents"], orient='records')
+    X = pd.read_json(cache_list["covariates"], orient='split')
+    y = pd.read_json(cache_list["dependents"], orient='split')
     biased_X = sm.add_constant(X.values)
 
     avg_beta_vector = input_list["avg_beta_vector"]
     mean_y_global = input_list["mean_y_global"]
+    
+    y1 = y.values.astype('float64')
 
     SSE_local, SST_local = [], []
-    for index, column in enumerate(y.columns):
-        curr_y = list(y[column])
+    for voxel in range(y1.shape[1]):
+        curr_y = y1[:, voxel]
         SSE_local.append(
-            reg.sum_squared_error(biased_X, curr_y, avg_beta_vector[index]))
+            reg.sum_squared_error(biased_X, curr_y, avg_beta_vector[voxel]))
         SST_local.append(
-            np.sum(np.square(np.subtract(curr_y, mean_y_global[index]))))
-
+            np.sum(np.square(np.subtract(curr_y, mean_y_global[voxel]))))
+        
     varX_matrix_local = np.dot(biased_X.T, biased_X)
-
+ 
     output_dict = {
         "SSE_local": SSE_local,
         "SST_local": SST_local,
