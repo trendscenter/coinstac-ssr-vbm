@@ -11,7 +11,7 @@ import regression as reg
 import sys
 import scipy as sp
 import ujson as json
-from remote_ancillary import get_stats_to_dict, print_pvals, print_beta_images
+from ancillary import print_pvals, print_beta_images
 
 
 def remote_1(args):
