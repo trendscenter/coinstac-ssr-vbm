@@ -43,11 +43,13 @@ def remote_0(args):
     covar_keys, unique_count = return_uniques_and_counts(df)
 
     ## begin code for global drop columns
-    random_site = site_info_count[random.choice(list(site_info_count.keys()))]
+    main_keys = covar_keys.keys()
+    uu_count = {
+        key: list(set(list(list_recursive(site_info_count, key))))
+        for key in main_keys
+    }
 
-    global_drop_cols = [
-        key for key in unique_count if unique_count[key] != random_site[key]
-    ]
+    global_drop_cols = [key for key in uu_count if len(uu_count[key]) != 1]
     ## end code for global drop columns
 
     computation_output_dict = {

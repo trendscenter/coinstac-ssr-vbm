@@ -222,12 +222,7 @@ def perform_encoding(args, data_f, exclude_cols=(' ')):
 
     # Dropping global_drop_cols
     global_drop_cols = args["input"]["global_drop_cols"]
-
-    for column in global_drop_cols:
-        try:
-            data_f = data_f.drop(columns=column)
-        except KeyError:
-            continue
+    data_f = data_f.drop(columns=global_drop_cols)
 
     # Creating dummies on non-unique categorical variables
     cols_nodrop = set(cols_categorical) - set(cols_mono)
