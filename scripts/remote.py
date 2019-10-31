@@ -5,19 +5,19 @@ This script includes the remote computations for single-shot ridge
 regression with decentralized statistic calculation
 """
 import os
-import random
 import sys
 import warnings
 
 import numpy as np
 import pandas as pd
-import ujson as json
-from scipy import stats
 
-from ancillary import encode_png, print_beta_images, print_pvals
+import ujson as json
+from ancillary import (encode_png, print_beta_images, print_pvals,
+                       print_r2_image)
 from nipype_utils import calculate_mask
 from remote_ancillary import remote_stats, return_uniques_and_counts
 from rw_utils import read_file
+from scipy import stats
 from utils import list_recursive
 
 warnings.simplefilter("ignore")
@@ -256,6 +256,7 @@ def remote_2(args):
 
     print_pvals(args, ps_global, ts_global, X_labels)
     print_beta_images(args, avg_beta_vector, X_labels)
+    print_r2_image(args, r_squared_global)
 
     # Block of code to print local stats as well
     sites = [site for site in input_list]

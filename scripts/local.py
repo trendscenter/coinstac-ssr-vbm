@@ -9,8 +9,8 @@ import sys
 import warnings
 
 import numpy as np
-import ujson as json
 
+import ujson as json
 from local_ancillary import (from_csv, local_stats_to_dict_numba,
                              mean_and_len_y, multiply, stats_calculation,
                              to_csv, vbm_parser)

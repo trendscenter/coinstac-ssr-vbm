@@ -8,9 +8,10 @@ Created on Wed Mar 21 19:25:26 2018
 import os
 import warnings
 
-import nibabel as nib
 import numpy as np
 import pandas as pd
+
+import nibabel as nib
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")

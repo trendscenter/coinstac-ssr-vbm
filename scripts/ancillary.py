@@ -8,9 +8,10 @@ Created on Fri May  3 05:09:13 2019
 import base64
 import os
 
-import nibabel as nib
 import numpy as np
 import pandas as pd
+
+import nibabel as nib
 from nilearn import plotting
 
 np.seterr(divide='ignore')
@@ -92,3 +93,29 @@ def print_pvals(args, ps_global, ts_global, covar_labels):
                                output_file=output_file,
                                display_mode='ortho',
                                colorbar=True)
+
+
+def print_r2_image(args, beta_df):
+    """Print regression coefficients as nifti files."""
+    state_ = args["state"]
+    images_folder = state_["outputDirectory"]
+
+    try:
+        mask = nib.load(os.path.join(args["state"]["baseDirectory"], MASK))
+    except FileNotFoundError:
+        mask = nib.load(os.path.join(args["state"]["cacheDirectory"], MASK))
+
+    new_data = np.zeros(mask.shape)
+    new_data[mask.get_data() > 0] = beta_df
+
+    image_string = 'r_squared'
+
+    clipped_img = nib.Nifti1Image(new_data, mask.affine, mask.header)
+    output_file = os.path.join(images_folder, image_string)
+
+    nib.save(clipped_img, output_file + '.nii')
+
+    plotting.plot_stat_map(clipped_img,
+                           output_file=output_file,
+                           display_mode='ortho',
+                           colorbar=True)
