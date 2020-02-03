@@ -1,1 +1,7 @@
-test/output/
+test/output/*
+test/cache/*
+test/transfer/*
+test/system/*
+**/mask.nii
+**/mni_downsampled.nii
+**/*.npy
