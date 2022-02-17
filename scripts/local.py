@@ -4,14 +4,17 @@
 This script includes the local computations for single-shot ridge
 regression with decentralized statistic calculation
 """
+import os
 import ujson as json
 import numpy as np
 import pandas as pd
 import sys
 import regression as reg
 import warnings
-from parsers import vbm_parser
 from local_ancillary import mean_and_len_y, local_stats_to_dict_numba
+
+import coinstacparsers
+from coinstacparsers import parsers
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
@@ -50,7 +53,9 @@ def local_1(args):
 
     """
     input_list = args["input"]
-    (X, y) = vbm_parser(args)
+
+    mask = os.path.join('/computation/assets/mask_6mm.nii')
+    (X, y) = parsers.vbm_parser(args, mask)
 
     X_labels = ['const'] + list(X.columns)
     y_labels = list(y.columns)
@@ -152,14 +157,14 @@ def local_2(args):
 
 if __name__ == '__main__':
 
-    parsed_args = json.loads(sys.stdin.read())
-    phase_key = list(reg.list_recursive(parsed_args, 'computation_phase'))
+    args = json.loads(sys.stdin.read())
+    phase_key = list(reg.list_recursive(args, 'computation_phase'))
 
     if not phase_key:
-        computation_output = local_1(parsed_args)
+        computation_output = local_1(args)
         sys.stdout.write(computation_output)
     elif "remote_1" in phase_key:
-        computation_output = local_2(parsed_args)
+        computation_output = local_2(args)
         sys.stdout.write(computation_output)
     else:
         raise ValueError("Error occurred at Local")

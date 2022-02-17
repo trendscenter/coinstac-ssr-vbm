@@ -81,7 +81,7 @@ def fsl_parser(args):
 def nifti_to_data(args, X):
     """Read nifti files as matrices"""
     try:
-        mask_file = os.path.join('/computation/mask_6mm.nii')
+        mask_file = os.path.join('/computation/assets/mask_6mm.nii')
         mask_data = nib.load(mask_file).get_data()
     except FileNotFoundError:
         raise Exception("Missing Mask at " + args["state"]["clientId"])
